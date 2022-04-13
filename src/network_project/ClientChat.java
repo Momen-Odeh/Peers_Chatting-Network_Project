@@ -90,6 +90,7 @@ public class ClientChat extends javax.swing.JFrame {
             /*********************************************************/
             Status.setText("Send to:"+SendPacket.getAddress().getHostAddress()+",Port:"+SendPacket.getPort());
 //            Socket.close();     
+             System.out.print("hello");
         }
         catch(java.lang.NumberFormatException e)
         {
