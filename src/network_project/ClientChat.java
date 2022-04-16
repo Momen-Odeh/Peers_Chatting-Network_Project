@@ -6,11 +6,15 @@
 package network_project;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import javax.swing.*;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -78,7 +82,7 @@ public class ClientChat extends javax.swing.JFrame {
             DatagramPacket SendPacket = new DatagramPacket(SendData, SendData.length, IPDest , Integer.parseInt(RemotePort.getText()));
             Socket.send(SendPacket); 
                /********************************************************/
-            String senmsg="Me: "+SendMsg+"\n";
+            String senmsg="Me: "+SendMsg+" from "+Socket.getLocalPort()+"\n";
             
             StyledDocument doc =Chat.getStyledDocument();
             Style style =Chat.addStyle("", null);
@@ -90,7 +94,7 @@ public class ClientChat extends javax.swing.JFrame {
             /*********************************************************/
             Status.setText("Send to:"+SendPacket.getAddress().getHostAddress()+",Port:"+SendPacket.getPort());
 //            Socket.close();     
-             System.out.print("hello");
+//             System.out.print("hello");
         }
         catch(java.lang.NumberFormatException e)
         {
@@ -124,7 +128,7 @@ public class ClientChat extends javax.swing.JFrame {
             Socket.receive(ReceivePacket);// from other client
             String ReceiveMsg = new String(ReceivePacket.getData());
             /**************************************************************/
-            String sert="from other: "+ ReceiveMsg.trim() +"\n";
+            String sert="Rem: "+ ReceiveMsg.trim() +" from "+ReceivePacket.getPort() +"\n";
              StyledDocument doc =Chat.getStyledDocument();
             Style style =Chat.addStyle("", null);
             StyleConstants.setItalic(style, true);
@@ -204,6 +208,11 @@ public class ClientChat extends javax.swing.JFrame {
         Login.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         Login.setForeground(new java.awt.Color(255, 0, 0));
         Login.setText("Login");
+        Login.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LoginActionPerformed(evt);
+            }
+        });
 
         Logout.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         Logout.setForeground(new java.awt.Color(0, 0, 255));
@@ -518,7 +527,7 @@ public class ClientChat extends javax.swing.JFrame {
     }//GEN-LAST:event_SendActionPerformed
 
     private void TestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestButtonActionPerformed
-        SendMsg="Hi bro";
+        SendMsg="Hello";
         testtxt=true;
         Client();
     }//GEN-LAST:event_TestButtonActionPerformed
@@ -554,10 +563,39 @@ public class ClientChat extends javax.swing.JFrame {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
             
     }//GEN-LAST:event_StartListingActionPerformed
+
+    private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
+         try
+        {
+            String [] iplocal=TCPserverIP.getText().split("\\.");
+            byte []IP_ser=new byte[4];
+            IP_ser[0]=(byte)Integer.parseInt(iplocal[0]);
+            IP_ser[1]=(byte)Integer.parseInt(iplocal[1]);
+            IP_ser[2]=(byte)Integer.parseInt(iplocal[2]);
+            IP_ser[3]=(byte)Integer.parseInt(iplocal[3]);
+            InetAddress IP = InetAddress.getByAddress(IP_ser);
+            
+            Socket ClientSocket =new Socket(IP, Integer.parseInt(TCPserverPort.getText()));
+            DataOutputStream outToServer = new DataOutputStream(ClientSocket.getOutputStream());
+            BufferedReader OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
+            String SendMsg ="login"; 
+            outToServer.writeBytes(SendMsg + '\n');
+            
+            String ReceiveMsg = OutputServer.readLine();
+            System.out.println("FROM SERVER: " + ReceiveMsg);
+            System.out.println("IP address for server: " + ClientSocket.getInetAddress());  
+            ClientSocket.close();
+               
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_LoginActionPerformed
 
     
 
