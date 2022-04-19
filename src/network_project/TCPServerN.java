@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -27,12 +28,18 @@ public class TCPServerN extends javax.swing.JFrame {
     ArrayList active =new ArrayList(); 
     public TCPServerN() {
         initComponents();
+        try{
+        OnlineUser1.append(InetAddress.getLocalHost().getHostAddress()); 
+        }
+        catch (Exception e){
+            
+        }
     }
     void server()
     {
         try
         {
-            ServerSocket InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()));
+            ServerSocket InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()));//,1000,InetAddress.getLocalHost());
             while(true) {
                 Socket ConnectionSocket = InitialSocket.accept();
                 BufferedReader InputClient = new BufferedReader(new InputStreamReader(ConnectionSocket.getInputStream()));

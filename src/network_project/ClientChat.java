@@ -571,15 +571,32 @@ public class ClientChat extends javax.swing.JFrame {
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
          try
         {
-            String [] iplocal=TCPserverIP.getText().split("\\.");
+            String [] ser;
+            if(TCPserverIP.getText().equalsIgnoreCase("127.0.0.1"))
+            {
+                ser=InetAddress.getLocalHost().getHostAddress().toString().split("\\.");
+            }
+            else{
+            ser=TCPserverIP.getText().split("\\.");
+            }
             byte []IP_ser=new byte[4];
-            IP_ser[0]=(byte)Integer.parseInt(iplocal[0]);
-            IP_ser[1]=(byte)Integer.parseInt(iplocal[1]);
-            IP_ser[2]=(byte)Integer.parseInt(iplocal[2]);
-            IP_ser[3]=(byte)Integer.parseInt(iplocal[3]);
+            IP_ser[0]=(byte)Integer.parseInt(ser[0]);
+            IP_ser[1]=(byte)Integer.parseInt(ser[1]);
+            IP_ser[2]=(byte)Integer.parseInt(ser[2]);
+            IP_ser[3]=(byte)Integer.parseInt(ser[3]);
             InetAddress IP = InetAddress.getByAddress(IP_ser);
+            //
+             String [] iplocal=LocalIP.getText().split("\\.");
+            byte []IP_loc=new byte[4];
+            IP_loc[0]=(byte)Integer.parseInt(iplocal[0]);
+            IP_loc[1]=(byte)Integer.parseInt(iplocal[1]);
+            IP_loc[2]=(byte)Integer.parseInt(iplocal[2]);
+            IP_loc[3]=(byte)Integer.parseInt(iplocal[3]);
+            InetAddress IP_client = InetAddress.getByAddress(IP_loc);
+            //
             
-            Socket ClientSocket =new Socket(IP, Integer.parseInt(TCPserverPort.getText()));
+            Socket ClientSocket =new Socket(IP, Integer.parseInt(TCPserverPort.getText()),IP_client,Integer.parseInt(LocalPort.getText()));// address server
+            System.out.println(ClientSocket.getLocalPort());
             DataOutputStream outToServer = new DataOutputStream(ClientSocket.getOutputStream());
             BufferedReader OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
             String SendMsg ="login"; 
