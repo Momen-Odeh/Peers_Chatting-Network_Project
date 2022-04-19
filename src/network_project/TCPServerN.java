@@ -50,18 +50,34 @@ public class TCPServerN extends javax.swing.JFrame {
 //                InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()),65000,InetAddress.getLocalHost());
 //            }
             InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()));//,1000,InetAddress.getLocalHost());
+            System.out.println("110");
             while(true) {
                 ConnectionSocket = InitialSocket.accept();
+                System.out.println("11");
                 BufferedReader InputClient = new BufferedReader(new InputStreamReader(ConnectionSocket.getInputStream()));
                 DataOutputStream outToClient = new DataOutputStream(ConnectionSocket.getOutputStream());
+                System.out.println("112");
                 String ClientMsg = InputClient.readLine();
                 String [] ss = ClientMsg.split("-");
-                active.add(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort());
-                
+                System.out.println("113");
                 DefaultListModel<String> model = new DefaultListModel<>();
                 jList1.setModel(model);
-                model.addAll(active);
-
+                if(ss[0].equals("login"))
+                {
+                    active.add(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort());
+                    model.addAll(active);
+                    OnlineUser.append("Login by: "+ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()+"\n");
+                    System.out.println("network_project.TCPServerN.server()");
+                }
+                else if(ss[0].equals("logout"))
+                {
+                 active.remove(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort());
+                 model.addAll(active);
+                 OnlineUser.append("Logout by: "+ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()+"\n");   
+                 System.out.println("network_project.TCPServerN.server()gfaergads");
+                }
+                
+                
                 System.out.println(active);
                 System.out.println("From Client: " + ClientMsg );
                 System.out.println(ConnectionSocket.getLocalAddress() +"  " +ConnectionSocket.getLocalPort()+"   "
@@ -121,7 +137,7 @@ public class TCPServerN extends javax.swing.JFrame {
         OnlineUser.setRows(5);
         jScrollPane3.setViewportView(OnlineUser);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Wi-Fi", "Loopback pseudo-Interface", " " }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Wi-Fi", "Loopback pseudo-Interface" }));
 
         jLabel9.setText("Status:");
 
@@ -160,9 +176,9 @@ public class TCPServerN extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(StartListing)
                             .addGroup(layout.createSequentialGroup()
@@ -175,8 +191,8 @@ public class TCPServerN extends javax.swing.JFrame {
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
                         .addComponent(activeUser, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

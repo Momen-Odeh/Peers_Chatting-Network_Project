@@ -206,7 +206,7 @@ public class ClientChat extends javax.swing.JFrame {
         UserName.setPreferredSize(new java.awt.Dimension(7, 24));
 
         Login.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        Login.setForeground(new java.awt.Color(255, 0, 0));
+        Login.setForeground(new java.awt.Color(0, 0, 255));
         Login.setText("Login");
         Login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -215,8 +215,13 @@ public class ClientChat extends javax.swing.JFrame {
         });
 
         Logout.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        Logout.setForeground(new java.awt.Color(0, 0, 255));
+        Logout.setForeground(new java.awt.Color(255, 0, 0));
         Logout.setText("Logout");
+        Logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogoutActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("TCP Server IP:");
 
@@ -567,11 +572,20 @@ public class ClientChat extends javax.swing.JFrame {
         }
             
     }//GEN-LAST:event_StartListingActionPerformed
-
+    Socket ClientSocket;
+    DataOutputStream outToServer;
+    BufferedReader OutputServer;
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
          try
         {
-//            Login.setEnabled(false);
+            Login.setEnabled(false);
+            UserName.setEnabled(false);
+            TCPserverIP.setEnabled(false);
+            TCPserverPort.setEnabled(false);
+            LocalIP.setEnabled(false);
+            LocalPort.setEnabled(false);
+            jComboBox1.setEnabled(false);
+            
             String [] ser;
             if(!TCPserverIP.getText().equals(LocalIP.getText()))
             {
@@ -596,13 +610,46 @@ public class ClientChat extends javax.swing.JFrame {
             InetAddress IP_client = InetAddress.getByAddress(IP_loc);
             //
             
-            Socket ClientSocket =new Socket(IP, Integer.parseInt(TCPserverPort.getText()),IP_client,Integer.parseInt(LocalPort.getText()));// address server
+            ClientSocket =new Socket(IP, Integer.parseInt(TCPserverPort.getText()),IP_client,Integer.parseInt(LocalPort.getText()));// address server
             System.out.println(ClientSocket.getLocalPort());
-            DataOutputStream outToServer = new DataOutputStream(ClientSocket.getOutputStream());
-            BufferedReader OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
+            outToServer = new DataOutputStream(ClientSocket.getOutputStream());
+            OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
             String SendMsg ="login-"+UserName.getText(); 
             outToServer.writeBytes(SendMsg + '\n');
             
+            String ReceiveMsg = OutputServer.readLine();
+            System.out.println("FROM SERVER: " + ReceiveMsg);
+            System.out.println("IP address for server: " + ClientSocket.getInetAddress());  
+            
+               
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            Login.setEnabled(true);
+            UserName.setEnabled(true);
+            TCPserverIP.setEnabled(true);
+            TCPserverPort.setEnabled(true);
+            LocalIP.setEnabled(true);
+            LocalPort.setEnabled(true);
+            jComboBox1.setEnabled(true);
+        }
+    }//GEN-LAST:event_LoginActionPerformed
+
+    private void LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutActionPerformed
+        try
+        {
+            Login.setEnabled(true);
+            UserName.setEnabled(true);
+            TCPserverIP.setEnabled(true);
+            TCPserverPort.setEnabled(true);
+            LocalIP.setEnabled(true);
+            LocalPort.setEnabled(true);
+            jComboBox1.setEnabled(true);
+            System.out.println(ClientSocket.getLocalPort());
+            String SendMsg ="logout-"+UserName.getText();
+            outToServer.writeBytes(SendMsg +'\n');
+            System.out.println("dcjbsj");
             String ReceiveMsg = OutputServer.readLine();
             System.out.println("FROM SERVER: " + ReceiveMsg);
             System.out.println("IP address for server: " + ClientSocket.getInetAddress());  
@@ -612,8 +659,16 @@ public class ClientChat extends javax.swing.JFrame {
         catch (Exception e)
         {
             e.printStackTrace();
+            Login.setEnabled(true);
+            UserName.setEnabled(true);
+            TCPserverIP.setEnabled(true);
+            TCPserverPort.setEnabled(true);
+            LocalIP.setEnabled(true);
+            LocalPort.setEnabled(true);
+            jComboBox1.setEnabled(true);
+            
         }
-    }//GEN-LAST:event_LoginActionPerformed
+    }//GEN-LAST:event_LogoutActionPerformed
 
     
 
