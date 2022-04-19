@@ -571,8 +571,9 @@ public class ClientChat extends javax.swing.JFrame {
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
          try
         {
+//            Login.setEnabled(false);
             String [] ser;
-            if(TCPserverIP.getText().equalsIgnoreCase("127.0.0.1"))
+            if(!TCPserverIP.getText().equals(LocalIP.getText()))
             {
                 ser=InetAddress.getLocalHost().getHostAddress().toString().split("\\.");
             }
@@ -599,7 +600,7 @@ public class ClientChat extends javax.swing.JFrame {
             System.out.println(ClientSocket.getLocalPort());
             DataOutputStream outToServer = new DataOutputStream(ClientSocket.getOutputStream());
             BufferedReader OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
-            String SendMsg ="login"; 
+            String SendMsg ="login-"+UserName.getText(); 
             outToServer.writeBytes(SendMsg + '\n');
             
             String ReceiveMsg = OutputServer.readLine();
