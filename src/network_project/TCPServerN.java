@@ -42,7 +42,8 @@ public class TCPServerN extends javax.swing.JFrame {
 
     }
     String [] ss;
-     DefaultListModel<String> model; 
+     DefaultListModel<String> model;
+     public static Thread logoutoff;
     class operate implements Runnable{
         Socket socket; 
         operate(Socket s)
@@ -72,9 +73,29 @@ public class TCPServerN extends javax.swing.JFrame {
                         active.remove(i); 
                         model.addAll(active);
                         System.out.println("network_project.TCPServerN.server()gfaergads");
+//                        logoutoff.interrupt();
+//                        break; 
                        }
                    }
+                    //*********
+                    String SendMsg ="";
+                    for(String S : active)
+                    {
+//                        if(!S.equals(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()))
+//                        {
+                        SendMsg+=S+"!";
+//                        }
+                    }
+                    System.err.println(activeSoket.size());
+                    for(Socket S : activeSoket)
+                    {
+                        System.err.println(S);
+                        DataOutputStream outToClient = new DataOutputStream(S.getOutputStream());
+                        outToClient.writeBytes(SendMsg+'\n');
+                    }
+                    //*********
                 }
+               
                }
                 catch(Exception e)
                    {
@@ -85,6 +106,7 @@ public class TCPServerN extends javax.swing.JFrame {
         }
         
     }
+     
     void server()
     {
         try
@@ -117,31 +139,27 @@ public class TCPServerN extends javax.swing.JFrame {
                     OnlineUser.append("Login by: "+ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()+"\n");
                     System.err.println("in LOGIN");
                     String SendMsg ="";
+//                    ArrayList<String> se = new ArrayList<>(active); 
+//                    se.remove(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+String.copyValueOf(ConnectionSocket.getPort())));
                     for(String S : active)
                     {
-                        //if(!S.equals(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort())){
-                        SendMsg+=S+"!";//}
+//                        if(!S.equals(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort())){
+                        SendMsg+=S+"!";
+//                        }
                     }
                     System.err.println(activeSoket.size());
                     for(Socket S : activeSoket)
                     {
+//                        if(!S.equals(ConnectionSocket)){
                         System.err.println(S);
                         DataOutputStream outToClient = new DataOutputStream(S.getOutputStream());
-                        outToClient.writeBytes(SendMsg+'\n');
+                        outToClient.writeBytes(SendMsg+'\n');//}
                     }
                     
-                    operate cc =new operate(ConnectionSocket); 
-                    Thread tttt =new Thread(cc); 
-                    tttt.start();
+                    operate yy =new operate(ConnectionSocket); 
+                    logoutoff =new Thread(yy); 
+                    logoutoff.start();
                 }
-//                else if(ss[0].equals("logout"))
-//                {
-//                
-////                 System.err.println("in LOGOUT");
-////                 model.addAll(active);
-////                 OnlineUser.append("Logout by: "+ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()+"\n");                
-//                 
-//                }
             }
         }
         catch (Exception e)

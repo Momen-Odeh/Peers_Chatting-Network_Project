@@ -50,6 +50,8 @@ public class ClientChat extends javax.swing.JFrame {
     }
     public ClientChat() {
         initComponents();
+         model = new DefaultListModel<>();
+         jList1.setModel(model);
         if(jComboBox1.getSelectedItem() == "Wi-Fi")
         {
             try {
@@ -548,6 +550,7 @@ public class ClientChat extends javax.swing.JFrame {
     DataOutputStream outToServer;
     BufferedReader OutputServer;
     String [] list;
+    DefaultListModel<String> model ;
     class UpdateActive implements Runnable
     {
          Socket client; 
@@ -560,20 +563,24 @@ public class ClientChat extends javax.swing.JFrame {
         public void run() {
             while(true)
             {
-                try{
+            try{
             OutputServer = new BufferedReader(new InputStreamReader(client.getInputStream()));
             String ReceiveMsg = OutputServer.readLine();
             System.out.println("FROM SERVER: " + ReceiveMsg);
-            DefaultListModel<String> model = new DefaultListModel<>();
-            jList1.setModel(model);
+            
+//            jList1.setModel(model);
             
             if(ReceiveMsg.contains("!"))
             { list =ReceiveMsg.split("!");
+            model.clear();
             for(String w : list)
             {
+                System.out.println(w);
+                if(!w.split(":")[0].equals(UserName.getText()))
                 model.addElement(w);
             }
             }
+            
                 }
                 catch(Exception e)
                 {
@@ -583,6 +590,7 @@ public class ClientChat extends javax.swing.JFrame {
         }
         
     }
+    Thread ttt;
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
         try
         {
@@ -648,7 +656,7 @@ public class ClientChat extends javax.swing.JFrame {
             System.out.println(SendMsg);
             outToServer.writeBytes(SendMsg+'\n');
             UpdateActive act =new UpdateActive(ClientSocket);
-            Thread ttt =new Thread(act); 
+            ttt =new Thread(act); 
             ttt.start();
 //            String ReceiveMsg = OutputServer.readLine();
 //            System.out.println("FROM SERVER: " + ReceiveMsg);
@@ -681,23 +689,7 @@ public class ClientChat extends javax.swing.JFrame {
             jComboBox1.setEnabled(true);
         }
     }//GEN-LAST:event_LoginActionPerformed
-    class LOGOUT implements Runnable
-    {
-        Socket client; 
-        LOGOUT(Socket x)
-        {
-            this.client=x;
-            
-        }
-        @Override
-        public void run() {
-            while(true)
-            {
-                
-            }
-        }
-        
-    }
+
     private void LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutActionPerformed
         try
         {
@@ -716,17 +708,23 @@ public class ClientChat extends javax.swing.JFrame {
             
             OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
             outToServer.writeBytes(SendMsg);
-            
-//            String ReceiveMsg = OutputServer.readLine();
-//            System.out.println("FROM SERVER: " + ReceiveMsg);
-//            System.out.println("IP address for server: " + ClientSocket.getInetAddress());  
+//            DefaultListModel<String> model = new DefaultListModel<>();
+//            jList1.setModel(model);
+            model.clear();
 //            ClientSocket.close();
 //            Socket.close();
+//            t.interrupt();
+//            ttt.interrupt();
+//            t.stop();
+//            ttt.stop();
+//            TCPServerN.logoutoff.interrupt();
+//            TCPServerN.logoutoff.stop();
+            
                
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+//            e.printStackTrace();
             Login.setEnabled(true);
             UserName.setEnabled(true);
             TCPserverIP.setEnabled(true);
