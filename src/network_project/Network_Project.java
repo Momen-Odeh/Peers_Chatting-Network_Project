@@ -18,6 +18,7 @@ public class Network_Project {
         // TODO code application logic here
         new ClientChat().setVisible(true);
         new ClientChat().setVisible(true);
+        new ClientChat().setVisible(true);
         new TCPServerN().setVisible(true);
     }
     

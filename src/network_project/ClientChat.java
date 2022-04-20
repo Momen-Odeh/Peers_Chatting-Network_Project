@@ -16,6 +16,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +38,8 @@ public class ClientChat extends javax.swing.JFrame {
     Thread t ;
     DatagramSocket Socket;
     String SendMsg;
-    boolean testtxt=false; 
+    boolean testtxt=false;
+    ArrayList<String> elements ; 
     class P2P_Conn implements Runnable
     {
         @Override
@@ -52,19 +54,22 @@ public class ClientChat extends javax.swing.JFrame {
         {
             try {
                 LocalIP.setText(InetAddress.getLocalHost().getHostAddress().toString());
+                TCPserverIP.setText(InetAddress.getLocalHost().getHostAddress().toString());
+                TCPserverPort.setText("5555");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
         
+        
     }
-    
-    void Client()
+    boolean fi=true;
+    void Client(String IPadd,String remport)
     {
         try
         {
 //            DatagramSocket Socket =new DatagramSocket();
-            String [] ipdest=RemoteIP.getText().split("\\.");
+            String [] ipdest=IPadd.split("\\.");
             byte []IP_other_device=new byte[4];
             IP_other_device[0]=(byte)Integer.parseInt(ipdest[0]);
             IP_other_device[1]=(byte)Integer.parseInt(ipdest[1]);
@@ -79,7 +84,7 @@ public class ClientChat extends javax.swing.JFrame {
                 testtxt=false; 
             
             byte[] SendData= SendMsg.getBytes();
-            DatagramPacket SendPacket = new DatagramPacket(SendData, SendData.length, IPDest , Integer.parseInt(RemotePort.getText()));
+            DatagramPacket SendPacket = new DatagramPacket(SendData, SendData.length, IPDest , Integer.parseInt(remport));
             Socket.send(SendPacket); 
                /********************************************************/
             String senmsg="Me: "+SendMsg+" from "+Socket.getLocalPort()+"\n";
@@ -90,7 +95,16 @@ public class ClientChat extends javax.swing.JFrame {
 		StyleConstants.setBold(style, true);
                 StyleConstants.setFontSize(style, 12);
             StyleConstants.setForeground(style, Color.RED);
+            if(fi == true ){
             doc.insertString(doc.getLength(), senmsg, style);
+            fi=false; 
+            }
+            String srtee=elements.get(elements.size()-1);
+            String[] wer=srtee.split(":");
+            if(wer[1].equals(IPadd)&&wer[2].equals(remport))
+            {
+                fi=true; 
+            }
             /*********************************************************/
             Status.setText("Send to:"+SendPacket.getAddress().getHostAddress()+",Port:"+SendPacket.getPort());
 //            Socket.close();     
@@ -187,14 +201,13 @@ public class ClientChat extends javax.swing.JFrame {
         Sendmsg = new javax.swing.JTextArea();
         jLabel9 = new javax.swing.JLabel();
         Status = new javax.swing.JTextField();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        OnlineUser = new javax.swing.JTextArea();
         jLabel10 = new javax.swing.JLabel();
-        StartListing = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         Chat = new javax.swing.JTextPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Client Chat");
         setMaximumSize(new java.awt.Dimension(1015, 460));
         setMinimumSize(new java.awt.Dimension(1015, 460));
@@ -227,11 +240,6 @@ public class ClientChat extends javax.swing.JFrame {
 
         TCPserverIP.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         TCPserverIP.setPreferredSize(new java.awt.Dimension(7, 24));
-        TCPserverIP.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TCPserverIPActionPerformed(evt);
-            }
-        });
 
         TCPserverPort.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         TCPserverPort.setPreferredSize(new java.awt.Dimension(7, 24));
@@ -312,23 +320,17 @@ public class ClientChat extends javax.swing.JFrame {
             }
         });
 
-        OnlineUser.setEditable(false);
-        OnlineUser.setColumns(20);
-        OnlineUser.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        OnlineUser.setRows(5);
-        jScrollPane3.setViewportView(OnlineUser);
-
         jLabel10.setText("Online User");
-
-        StartListing.setText("Start Listing");
-        StartListing.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                StartListingActionPerformed(evt);
-            }
-        });
 
         Chat.setEditable(false);
         jScrollPane4.setViewportView(Chat);
+
+        jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList1ValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jList1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -385,16 +387,13 @@ public class ClientChat extends javax.swing.JFrame {
                             .addComponent(TCPserverIP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(StartListing, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(Send, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(TestButton, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addComponent(Send, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(TestButton, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
+                    .addComponent(jLabel10)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -402,77 +401,79 @@ public class ClientChat extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(9, 9, 9)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(Login, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(UserName, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(Logout, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(250, 250, 250)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(Status, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(StartListing, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(TCPserverIP, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(3, 3, 3)
-                                        .addComponent(jLabel3))
-                                    .addComponent(TCPserverPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(22, 22, 22)
-                                .addComponent(jLabel4)
-                                .addGap(6, 6, 6)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(3, 3, 3)
-                                        .addComponent(jLabel5))
-                                    .addComponent(LocalIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(19, 19, 19)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(3, 3, 3)
-                                        .addComponent(jLabel6))
-                                    .addComponent(LocalPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(3, 3, 3)
-                                        .addComponent(jLabel8))
-                                    .addComponent(RemoteIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(13, 13, 13)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(RemotePort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(TestButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(Send, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(3, 3, 3)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(32, 32, 32)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(9, 9, 9)
+                                        .addComponent(jLabel1))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(Login, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(UserName, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(Logout, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(250, 250, 250)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel9)
+                                    .addComponent(Status, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(36, 36, 36)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel2)
+                                    .addComponent(TCPserverIP, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(3, 3, 3)
+                                                .addComponent(jLabel3))
+                                            .addComponent(TCPserverPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(22, 22, 22)
+                                        .addComponent(jLabel4)
+                                        .addGap(6, 6, 6)
+                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(3, 3, 3)
+                                                .addComponent(jLabel5))
+                                            .addComponent(LocalIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(19, 19, 19)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(3, 3, 3)
+                                                .addComponent(jLabel6))
+                                            .addComponent(LocalPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(3, 3, 3)
+                                                .addComponent(jLabel8))
+                                            .addComponent(RemoteIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(13, 13, 13)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(RemotePort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addComponent(TestButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addComponent(Send, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(3, 3, 3)
+                                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
@@ -491,16 +492,13 @@ public class ClientChat extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_RemotePortActionPerformed
 
-    private void TCPserverIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TCPserverIPActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_TCPserverIPActionPerformed
-
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
        if(jComboBox1.getSelectedItem().equals("Loopback pseudo-Interface"))
        {
            LocalIP.setText("127.0.0.1");
 //           LocalIP.setEditable(false);
-           RemoteIP.setText("127.0.0.1");
+//           RemoteIP.setText("127.0.0.1");
+           TCPserverIP.setText("127.0.0.1");
 //           RemoteIP.setEditable(false);
        }
        else if(jComboBox1.getSelectedItem().equals("Wi-Fi"))
@@ -509,6 +507,7 @@ public class ClientChat extends javax.swing.JFrame {
                 LocalIP.setText("");
                 RemoteIP.setText("");
                 LocalIP.setText(InetAddress.getLocalHost().getHostAddress().toString());
+                TCPserverIP.setText(InetAddress.getLocalHost().getHostAddress().toString());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -527,19 +526,67 @@ public class ClientChat extends javax.swing.JFrame {
     }//GEN-LAST:event_StatusActionPerformed
 //    static  boolean flag=false; 
     private void SendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendActionPerformed
-        Client();
+        for(String s : elements)
+        {
+            String [] ss = s.split(":");
+            Client(ss[1],ss[2]);
+        }
+        
         Sendmsg.setText("");
     }//GEN-LAST:event_SendActionPerformed
 
     private void TestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestButtonActionPerformed
         SendMsg="Hello";
         testtxt=true;
-        Client();
+        for(String s : elements)
+        {
+            String [] ss = s.split(":");
+            Client(ss[1],ss[2]);
+        }
     }//GEN-LAST:event_TestButtonActionPerformed
-
-    private void StartListingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StartListingActionPerformed
+    Socket ClientSocket;
+    DataOutputStream outToServer;
+    BufferedReader OutputServer;
+    String [] list;
+    class UpdateActive implements Runnable
+    {
+         Socket client; 
+        UpdateActive(Socket x)
+        {
+            this.client=x;
             
-        try{
+        }
+        @Override
+        public void run() {
+            while(true)
+            {
+                try{
+            OutputServer = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            String ReceiveMsg = OutputServer.readLine();
+            System.out.println("FROM SERVER: " + ReceiveMsg);
+            DefaultListModel<String> model = new DefaultListModel<>();
+            jList1.setModel(model);
+            
+            if(ReceiveMsg.contains("!"))
+            { list =ReceiveMsg.split("!");
+            for(String w : list)
+            {
+                model.addElement(w);
+            }
+            }
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+    }
+    private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
+        try
+        {
+            //**************************************************************
             if(Socket == null)
             {
             Socket =new DatagramSocket(Integer.parseInt(LocalPort.getText()));
@@ -557,27 +604,7 @@ public class ClientChat extends javax.swing.JFrame {
                 t =new Thread(MN);
                 t.start();
             }
-        }
-        catch(java.lang.NumberFormatException e)
-        {
-            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter Local IP & local port in correct format","WARNING", JOptionPane.WARNING_MESSAGE);
-        }
-        catch(java.lang.IllegalArgumentException e)
-        {
-            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter local port in range","WARNING", JOptionPane.WARNING_MESSAGE);
-        }
-        catch(Exception e)
-        {
-//            e.printStackTrace();
-        }
-            
-    }//GEN-LAST:event_StartListingActionPerformed
-    Socket ClientSocket;
-    DataOutputStream outToServer;
-    BufferedReader OutputServer;
-    private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
-         try
-        {
+            //**************************************************************
             Login.setEnabled(false);
             UserName.setEnabled(false);
             TCPserverIP.setEnabled(false);
@@ -585,15 +612,18 @@ public class ClientChat extends javax.swing.JFrame {
             LocalIP.setEnabled(false);
             LocalPort.setEnabled(false);
             jComboBox1.setEnabled(false);
+            RemoteIP.setEnabled(false);
+            RemotePort.setEnabled(false);
             
             String [] ser;
-            if(!TCPserverIP.getText().equals(LocalIP.getText()))
-            {
-                ser=InetAddress.getLocalHost().getHostAddress().toString().split("\\.");
-            }
-            else{
+//            if(!TCPserverIP.getText().equals(LocalIP.getText()))
+//            {
+//                ser=InetAddress.getLocalHost().getHostAddress().toString().split("\\.");
+//            }
+//            else{
+//            ser=TCPserverIP.getText().split("\\.");
+//            }
             ser=TCPserverIP.getText().split("\\.");
-            }
             byte []IP_ser=new byte[4];
             IP_ser[0]=(byte)Integer.parseInt(ser[0]);
             IP_ser[1]=(byte)Integer.parseInt(ser[1]);
@@ -611,17 +641,33 @@ public class ClientChat extends javax.swing.JFrame {
             //
             
             ClientSocket =new Socket(IP, Integer.parseInt(TCPserverPort.getText()),IP_client,Integer.parseInt(LocalPort.getText()));// address server
-            System.out.println(ClientSocket.getLocalPort());
+            //System.out.println(ClientSocket.getLocalPort());
             outToServer = new DataOutputStream(ClientSocket.getOutputStream());
             OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
             String SendMsg ="login-"+UserName.getText(); 
-            outToServer.writeBytes(SendMsg + '\n');
+            System.out.println(SendMsg);
+            outToServer.writeBytes(SendMsg+'\n');
+            UpdateActive act =new UpdateActive(ClientSocket);
+            Thread ttt =new Thread(act); 
+            ttt.start();
+//            String ReceiveMsg = OutputServer.readLine();
+//            System.out.println("FROM SERVER: " + ReceiveMsg);
+//            DefaultListModel<String> model = new DefaultListModel<>();
+//            jList1.setModel(model);
+//            String [] list =ReceiveMsg.split("!");
+//            for(String w : list)
+//            {
+//                model.addElement(w);
+//            }
             
-            String ReceiveMsg = OutputServer.readLine();
-            System.out.println("FROM SERVER: " + ReceiveMsg);
-            System.out.println("IP address for server: " + ClientSocket.getInetAddress());  
-            
-               
+        }
+        catch(java.lang.NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter Local IP & local port in correct format","WARNING", JOptionPane.WARNING_MESSAGE);
+        }
+        catch(java.lang.IllegalArgumentException e)
+        {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter local port in range","WARNING", JOptionPane.WARNING_MESSAGE);
         }
         catch (Exception e)
         {
@@ -635,7 +681,23 @@ public class ClientChat extends javax.swing.JFrame {
             jComboBox1.setEnabled(true);
         }
     }//GEN-LAST:event_LoginActionPerformed
-
+    class LOGOUT implements Runnable
+    {
+        Socket client; 
+        LOGOUT(Socket x)
+        {
+            this.client=x;
+            
+        }
+        @Override
+        public void run() {
+            while(true)
+            {
+                
+            }
+        }
+        
+    }
     private void LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutActionPerformed
         try
         {
@@ -646,14 +708,20 @@ public class ClientChat extends javax.swing.JFrame {
             LocalIP.setEnabled(true);
             LocalPort.setEnabled(true);
             jComboBox1.setEnabled(true);
-            System.out.println(ClientSocket.getLocalPort());
-            String SendMsg ="logout-"+UserName.getText();
-            outToServer.writeBytes(SendMsg +'\n');
-            System.out.println("dcjbsj");
-            String ReceiveMsg = OutputServer.readLine();
-            System.out.println("FROM SERVER: " + ReceiveMsg);
-            System.out.println("IP address for server: " + ClientSocket.getInetAddress());  
-            ClientSocket.close();
+            
+            System.out.println(ClientSocket.getLocalPort()+"!!!!!!!!!!!!!!!");
+            outToServer = new DataOutputStream(ClientSocket.getOutputStream());
+            String SendMsg ="logout-"+UserName.getText()+"\n";
+            System.out.println(SendMsg);
+            
+            OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
+            outToServer.writeBytes(SendMsg);
+            
+//            String ReceiveMsg = OutputServer.readLine();
+//            System.out.println("FROM SERVER: " + ReceiveMsg);
+//            System.out.println("IP address for server: " + ClientSocket.getInetAddress());  
+//            ClientSocket.close();
+//            Socket.close();
                
         }
         catch (Exception e)
@@ -670,6 +738,22 @@ public class ClientChat extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_LogoutActionPerformed
 
+    private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
+        elements =new ArrayList(jList1.getSelectedValuesList());
+        if(elements.size() == 1)
+        {
+            String sel= (String)elements.get(0);
+            String [] sp = sel.split(":");
+            RemoteIP.setText(sp[1]);
+            RemotePort.setText(sp[2]);
+        }
+        else if(elements.size() > 1)
+        {
+            RemoteIP.setText("multiple IP");
+            RemotePort.setText("multiple Port");
+        }
+    }//GEN-LAST:event_jList1ValueChanged
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -678,12 +762,10 @@ public class ClientChat extends javax.swing.JFrame {
     private javax.swing.JTextField LocalPort;
     private javax.swing.JButton Login;
     private javax.swing.JButton Logout;
-    private javax.swing.JTextArea OnlineUser;
     private javax.swing.JTextField RemoteIP;
     private javax.swing.JTextField RemotePort;
     private javax.swing.JButton Send;
     private javax.swing.JTextArea Sendmsg;
-    private javax.swing.JButton StartListing;
     private javax.swing.JTextField Status;
     private javax.swing.JTextField TCPserverIP;
     private javax.swing.JTextField TCPserverPort;
@@ -700,8 +782,9 @@ public class ClientChat extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JList<String> jList1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     // End of variables declaration//GEN-END:variables
 }

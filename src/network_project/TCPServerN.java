@@ -8,6 +8,8 @@ package network_project;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -30,61 +32,116 @@ public class TCPServerN extends javax.swing.JFrame {
      */
     Thread t; 
     ArrayList <String> active =new ArrayList();
+    ArrayList <Socket> activeSoket =new ArrayList();
      ServerSocket InitialSocket;
      Socket ConnectionSocket;
 
     public TCPServerN() {
         initComponents();
+        PortNo.setText("5555");
 
+    }
+    String [] ss;
+     DefaultListModel<String> model; 
+    class operate implements Runnable{
+        Socket socket; 
+        operate(Socket s)
+        {
+            this.socket=s; 
+        }
+        @Override
+        public void run() {
+           while (true)
+           {
+               try{
+                   
+               BufferedReader InputClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String ClientMsg = InputClient.readLine().trim();
+                ss = ClientMsg.split("-");
+               if(ss[0].equals("logout"))
+                {
+                 for(int i=0 ; i<active.size();i++ )
+                   {
+                       if(active.get(i).split(":")[0].equals(ss[1]))
+                       {
+                        
+//                        System.err.println(ss[1]+":"+activeSoket.get(i).getInetAddress().toString().replace("/","")+":"+activeSoket.get(i).getPort());
+                        OnlineUser.append("Logout by: "+ss[1]+":"+activeSoket.get(i).getInetAddress().toString().replace("/","")+":"+activeSoket.get(i).getPort()+"\n");   
+                        model.clear();
+                        activeSoket.remove(i);
+                        active.remove(i); 
+                        model.addAll(active);
+                        System.out.println("network_project.TCPServerN.server()gfaergads");
+                       }
+                   }
+                }
+               }
+                catch(Exception e)
+                   {
+                   e.printStackTrace();
+                   }
+           }
+           
+        }
+        
     }
     void server()
     {
         try
         {
-//            if(jComboBox1.getSelectedItem().equals("Loopback pseudo-Interface"))
-//            {
-//                InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()),65000,InetAddress.getByName("127.0.0.1"));
-//            }
-//            else
-//            {
-//                InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()),65000,InetAddress.getLocalHost());
-//            }
-            InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()));//,1000,InetAddress.getLocalHost());
-            System.out.println("110");
+            if(jComboBox1.getSelectedItem().equals("Loopback pseudo-Interface"))
+            {
+                InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()),65000,InetAddress.getByName("127.0.0.1"));
+            }
+            else
+            {
+                InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()),65000,InetAddress.getLocalHost());
+            }
+           // InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()));//,1000,InetAddress.getLocalHost());
+            System.err.println(InitialSocket);
             while(true) {
+                System.err.println("enter loop server");
                 ConnectionSocket = InitialSocket.accept();
-                System.out.println("11");
+                System.err.println("accept loop server");
+                
                 BufferedReader InputClient = new BufferedReader(new InputStreamReader(ConnectionSocket.getInputStream()));
-                DataOutputStream outToClient = new DataOutputStream(ConnectionSocket.getOutputStream());
-                System.out.println("112");
-                String ClientMsg = InputClient.readLine();
-                String [] ss = ClientMsg.split("-");
-                System.out.println("113");
-                DefaultListModel<String> model = new DefaultListModel<>();
+                String ClientMsg = InputClient.readLine().trim();
+                ss = ClientMsg.split("-");
+               model = new DefaultListModel<>();
                 jList1.setModel(model);
-                if(ss[0].equals("login"))
+               if(ss[0].equals("login"))
                 {
+                    activeSoket.add(ConnectionSocket);
                     active.add(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort());
                     model.addAll(active);
                     OnlineUser.append("Login by: "+ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()+"\n");
-                    System.out.println("network_project.TCPServerN.server()");
+                    System.err.println("in LOGIN");
+                    String SendMsg ="";
+                    for(String S : active)
+                    {
+                        //if(!S.equals(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort())){
+                        SendMsg+=S+"!";//}
+                    }
+                    System.err.println(activeSoket.size());
+                    for(Socket S : activeSoket)
+                    {
+                        System.err.println(S);
+                        DataOutputStream outToClient = new DataOutputStream(S.getOutputStream());
+                        outToClient.writeBytes(SendMsg+'\n');
+                    }
+                    
+                    operate cc =new operate(ConnectionSocket); 
+                    Thread tttt =new Thread(cc); 
+                    tttt.start();
                 }
-                else if(ss[0].equals("logout"))
-                {
-                 active.remove(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort());
-                 model.addAll(active);
-                 OnlineUser.append("Logout by: "+ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()+"\n");   
-                 System.out.println("network_project.TCPServerN.server()gfaergads");
-                }
-                
-                
-                System.out.println(active);
-                System.out.println("From Client: " + ClientMsg );
-                System.out.println(ConnectionSocket.getLocalAddress() +"  " +ConnectionSocket.getLocalPort()+"   "
-                        +ConnectionSocket.getInetAddress()+ "  " + ConnectionSocket.getPort() ); 
-                 String SendMsg ="Error 404"+'\n';
-                outToClient.writeBytes(SendMsg);
-                
+//                else if(ss[0].equals("logout"))
+//                {
+//                
+////                 System.err.println("in LOGOUT");
+////                 model.addAll(active);
+////                 OnlineUser.append("Logout by: "+ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()+"\n");                
+//                 
+//                }
             }
         }
         catch (Exception e)
@@ -121,6 +178,7 @@ public class TCPServerN extends javax.swing.JFrame {
         jList1 = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         StartListing.setText("Start Listing");
         StartListing.addActionListener(new java.awt.event.ActionListener() {
@@ -206,8 +264,9 @@ public class TCPServerN extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void StartListingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StartListingActionPerformed
-    t =new Thread(new TCP_Server()); 
-    t.start();
+    
+        t =new Thread(new TCP_Server()); 
+        t.start();
     if(jComboBox1.getSelectedItem().equals("Loopback pseudo-Interface"))
     {
         Status.setText("Address: "+"127.0.0.1"+" Port: "+PortNo.getText());
