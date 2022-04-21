@@ -35,11 +35,19 @@ public class ClientChat extends javax.swing.JFrame {
     /**
      * Creates new form ClientChat
      */
-    Thread t ;
-    DatagramSocket Socket;
+    // declaration 
+    Thread t ; // UDP thread P2P_Connection
+    DatagramSocket Socket; // UDP soket
     String SendMsg;
     boolean testtxt=false;
-    ArrayList<String> elements ; 
+    ArrayList<String> elements ;
+    Thread ttt;// TCP thread UpdateActive
+    Socket ClientSocket; //TCP soket
+    DataOutputStream outToServer;//TCP output stream
+    BufferedReader OutputServer;//ICP Input
+    DefaultListModel<String> model ;
+    
+    // end declaration 
     class P2P_Conn implements Runnable
     {
         @Override
@@ -72,7 +80,6 @@ public class ClientChat extends javax.swing.JFrame {
     {
         try
         {
-//            DatagramSocket Socket =new DatagramSocket();
             String [] ipdest=IPadd.split("\\.");
             byte []IP_other_device=new byte[4];
             IP_other_device[0]=(byte)Integer.parseInt(ipdest[0]);
@@ -85,13 +92,17 @@ public class ClientChat extends javax.swing.JFrame {
                 SendMsg = Sendmsg.getText();
             }
             else
-                testtxt=false; 
+            
+            testtxt=false; 
+            String sindfre=SendMsg;
+            SendMsg=UserName.getText()+": "+SendMsg;
+
             
             byte[] SendData= SendMsg.getBytes();
             DatagramPacket SendPacket = new DatagramPacket(SendData, SendData.length, IPDest , Integer.parseInt(remport));
             Socket.send(SendPacket); 
                /********************************************************/
-            String senmsg="Me: "+SendMsg+" from "+Socket.getLocalPort()+"\n";
+            String senmsg="Me: "+sindfre+" from "+Socket.getLocalPort()+"\n";
             
             StyledDocument doc =Chat.getStyledDocument();
             Style style =Chat.addStyle("", null);
@@ -111,8 +122,6 @@ public class ClientChat extends javax.swing.JFrame {
             }
             /*********************************************************/
             Status.setText("Send to:"+SendPacket.getAddress().getHostAddress()+",Port:"+SendPacket.getPort());
-//            Socket.close();     
-//             System.out.print("hello");
         }
         catch(java.lang.NumberFormatException e)
         {
@@ -139,14 +148,13 @@ public class ClientChat extends javax.swing.JFrame {
     {
         try
         {
-//            Socket = new DatagramSocket(Integer.parseInt(LocalPort.getText()));
             while(true){
             byte[] ReceiveData = new byte[65536];
             DatagramPacket ReceivePacket = new DatagramPacket(ReceiveData, ReceiveData.length);
             Socket.receive(ReceivePacket);// from other client
             String ReceiveMsg = new String(ReceivePacket.getData());
             /**************************************************************/
-            String sert="Rem: "+ ReceiveMsg.trim() +" from "+ReceivePacket.getPort() +"\n";
+            String sert= ReceiveMsg.trim() +" from "+ReceivePacket.getPort() +"\n";
              StyledDocument doc =Chat.getStyledDocument();
             Style style =Chat.addStyle("", null);
             StyleConstants.setItalic(style, true);
@@ -164,7 +172,6 @@ public class ClientChat extends javax.swing.JFrame {
         }
         catch(java.net.BindException e)
         {
-            //e.printStackTrace();
             JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Address already in uses, please choose diffrent port","WARNING", JOptionPane.WARNING_MESSAGE);
         }
         catch (Exception e)
@@ -500,10 +507,7 @@ public class ClientChat extends javax.swing.JFrame {
        if(jComboBox1.getSelectedItem().equals("Loopback pseudo-Interface"))
        {
            LocalIP.setText("127.0.0.1");
-//           LocalIP.setEditable(false);
-//           RemoteIP.setText("127.0.0.1");
            TCPserverIP.setText("127.0.0.1");
-//           RemoteIP.setEditable(false);
        }
        else if(jComboBox1.getSelectedItem().equals("Wi-Fi"))
         {
@@ -512,23 +516,23 @@ public class ClientChat extends javax.swing.JFrame {
                 RemoteIP.setText("");
                 LocalIP.setText(InetAddress.getLocalHost().getHostAddress().toString());
                 TCPserverIP.setText(InetAddress.getLocalHost().getHostAddress().toString());
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 ex.printStackTrace();
             }
         }
        else
        {
            LocalIP.setText("");
-//           LocalIP.setEditable(true);
            RemoteIP.setText("");
-//           RemoteIP.setEditable(true);
        }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void StatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StatusActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_StatusActionPerformed
-//    static  boolean flag=false; 
+ 
     private void SendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendActionPerformed
         for(String s : elements)
         {
@@ -548,11 +552,8 @@ public class ClientChat extends javax.swing.JFrame {
             Client(ss[1],ss[2]);
         }
     }//GEN-LAST:event_TestButtonActionPerformed
-    Socket ClientSocket;
-    DataOutputStream outToServer;
-    BufferedReader OutputServer;
-    String [] list;
-    DefaultListModel<String> model ;
+
+    String [] list;//for split    
     class UpdateActive implements Runnable
     {
          Socket client; 
@@ -569,9 +570,7 @@ public class ClientChat extends javax.swing.JFrame {
             OutputServer = new BufferedReader(new InputStreamReader(client.getInputStream()));
             String ReceiveMsg = OutputServer.readLine();
             System.out.println("FROM SERVER: " + ReceiveMsg);
-            
-//            jList1.setModel(model);
-            
+
             if(ReceiveMsg.contains("!"))
             { list =ReceiveMsg.split("!");
             model.clear();
@@ -592,7 +591,7 @@ public class ClientChat extends javax.swing.JFrame {
         }
         
     }
-    Thread ttt;
+    
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
         try
         {
@@ -600,35 +599,13 @@ public class ClientChat extends javax.swing.JFrame {
             {
                 throw new java.lang.NullPointerException(); 
             }
-            
             //**************************************************************
-            if(Socket == null)
-            {
             Socket =new DatagramSocket(Integer.parseInt(LocalPort.getText()));
             P2P_Conn MN =new P2P_Conn();
             t =new Thread(MN);
             t.start();
-            }
-            else
-            {
-                Socket.close(); //------------------------------------------------------------------->
-                t.interrupt();
-                Socket =new DatagramSocket(Integer.parseInt(LocalPort.getText()));
-                P2P_Conn MN =new P2P_Conn();
-                t =new Thread(MN);
-                t.start();
-            }
             //**************************************************************
-            
-            
             String [] ser;
-//            if(!TCPserverIP.getText().equals(LocalIP.getText()))
-//            {
-//                ser=InetAddress.getLocalHost().getHostAddress().toString().split("\\.");
-//            }
-//            else{
-//            ser=TCPserverIP.getText().split("\\.");
-//            }
             ser=TCPserverIP.getText().split("\\.");
             byte []IP_ser=new byte[4];
             IP_ser[0]=(byte)Integer.parseInt(ser[0]);
@@ -645,9 +622,8 @@ public class ClientChat extends javax.swing.JFrame {
             IP_loc[3]=(byte)Integer.parseInt(iplocal[3]);
             InetAddress IP_client = InetAddress.getByAddress(IP_loc);
             //
-            
+            //TCP code
             ClientSocket =new Socket(IP, Integer.parseInt(TCPserverPort.getText()),IP_client,Integer.parseInt(LocalPort.getText()));// address server
-            //System.out.println(ClientSocket.getLocalPort());
             outToServer = new DataOutputStream(ClientSocket.getOutputStream());
             OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
             String SendMsg ="login-"+UserName.getText(); 
@@ -656,15 +632,7 @@ public class ClientChat extends javax.swing.JFrame {
             UpdateActive act =new UpdateActive(ClientSocket);
             ttt =new Thread(act); 
             ttt.start();
-//            String ReceiveMsg = OutputServer.readLine();
-//            System.out.println("FROM SERVER: " + ReceiveMsg);
-//            DefaultListModel<String> model = new DefaultListModel<>();
-//            jList1.setModel(model);
-//            String [] list =ReceiveMsg.split("!");
-//            for(String w : list)
-//            {
-//                model.addElement(w);
-//            }
+            
             Login.setEnabled(false);
             Logout.setEnabled(true);
             UserName.setEnabled(false);
@@ -705,41 +673,28 @@ public class ClientChat extends javax.swing.JFrame {
         catch (Exception e)
         {
             e.printStackTrace();
-//            Login.setEnabled(true);
-//            UserName.setEnabled(true);
-//            TCPserverIP.setEnabled(true);
-//            TCPserverPort.setEnabled(true);
-//            LocalIP.setEnabled(true);
-//            LocalPort.setEnabled(true);
-//            jComboBox1.setEnabled(true);
         }
     }//GEN-LAST:event_LoginActionPerformed
 
     private void LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutActionPerformed
         try
         {
-            
-            
             System.out.println(ClientSocket.getLocalPort()+"!!!!!!!!!!!!!!!");
             outToServer = new DataOutputStream(ClientSocket.getOutputStream());
             String SendMsg ="logout-"+UserName.getText()+"\n";
-            System.out.println(SendMsg);
-            
+            System.out.println(SendMsg);            
             OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
             outToServer.writeBytes(SendMsg);
-//            DefaultListModel<String> model = new DefaultListModel<>();
-//            jList1.setModel(model);
             model.clear();
-//                        Socket.close();
+            //closed soked and thread area
+//            Socket.close();
 //            ClientSocket.close();
-
 //            t.interrupt();
 //            ttt.interrupt();
-//            t.stop();
-//            ttt.stop();
 //            TCPServerN.logoutoff.interrupt();
 //            TCPServerN.logoutoff.stop();
-              RemoteIP.setEnabled(true);
+
+            RemoteIP.setEnabled(true);
             RemotePort.setEnabled(true);
             RemoteIP.setText("");
             RemotePort.setText("");
@@ -747,7 +702,6 @@ public class ClientChat extends javax.swing.JFrame {
             UserName.setText("");
             Logout.setEnabled(false);
             Login.setEnabled(true);
-            //-->
             UserName.setEnabled(true);
             TCPserverIP.setEnabled(true);
             TCPserverPort.setEnabled(true);
@@ -758,7 +712,7 @@ public class ClientChat extends javax.swing.JFrame {
         }
         catch (Exception e)
         {
-//            e.printStackTrace();
+            e.printStackTrace();
             Login.setEnabled(true);
             UserName.setEnabled(true);
             TCPserverIP.setEnabled(true);
