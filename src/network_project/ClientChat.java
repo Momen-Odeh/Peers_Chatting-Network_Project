@@ -41,7 +41,7 @@ public class ClientChat extends javax.swing.JFrame {
     String SendMsg;
     boolean testtxt=false;
     ArrayList<String> elements ;
-    Thread ttt;// TCP thread UpdateActive
+    static Thread ttt;// TCP thread UpdateActive
     Socket ClientSocket; //TCP soket
     DataOutputStream outToServer;//TCP output stream
     BufferedReader OutputServer;//ICP Input
@@ -571,7 +571,7 @@ public class ClientChat extends javax.swing.JFrame {
             String ReceiveMsg = OutputServer.readLine();
             System.out.println("FROM SERVER: " + ReceiveMsg);
 
-            if(ReceiveMsg.contains("!"))
+            if(ReceiveMsg != null )
             { list =ReceiveMsg.split("!");
             model.clear();
             for(String w : list)
@@ -690,7 +690,16 @@ public class ClientChat extends javax.swing.JFrame {
 //            Socket.close();
 //            ClientSocket.close();
 //            t.interrupt();
+            
+            
+//            ClientSocket.close();//TCP
 //            ttt.interrupt();
+//            ttt.stop();
+            Socket.close();//UDP
+            t.interrupt();
+            t.stop();
+            
+           
 //            TCPServerN.logoutoff.interrupt();
 //            TCPServerN.logoutoff.stop();
 

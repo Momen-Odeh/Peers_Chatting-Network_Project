@@ -51,12 +51,13 @@ public class TCPServerN extends javax.swing.JFrame {
         {
             this.socket=s; 
         }
+        boolean fout=false; 
         @Override
         public void run() {
            while (true)
            {
                try{
-                   
+                   fout=false; 
                BufferedReader InputClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String ClientMsg = InputClient.readLine().trim();
                 ss = ClientMsg.split("-");
@@ -66,26 +67,35 @@ public class TCPServerN extends javax.swing.JFrame {
                    {
                        if(active.get(i).split(":")[0].equals(ss[1]))
                        {
-                        
-//                        System.err.println(ss[1]+":"+activeSoket.get(i).getInetAddress().toString().replace("/","")+":"+activeSoket.get(i).getPort());
                         OnlineUser.append("Logout by: "+ss[1]+":"+activeSoket.get(i).getInetAddress().toString().replace("/","")+":"+activeSoket.get(i).getPort()+"\n");   
                         model.clear();
+//                        DataOutputStream outToClient = new DataOutputStream(activeSoket.get(i).getOutputStream());
+//                        outToClient.writeBytes("done"+'\n');
+                            
+//                       if(logoutoff_Run.socket .equals(activeSoket.get(i)) ){
+//                           System.out.println(ClientChat.ttt.);
+                        ClientChat.ttt.interrupt();
+                        ClientChat.ttt.stop();
+                        activeSoket.get(i).close();
+                        logoutoff.interrupt();
+                        logoutoff.stop();
+//                       }
+                        
                         activeSoket.remove(i);
                         active.remove(i); 
                         model.addAll(active);
                         System.out.println("network_project.TCPServerN.server()gfaergads");
 //                        logoutoff.interrupt();
-//                        break; 
+                            fout=true;
+                        break; 
                        }
                    }
+                 
                     //*********
                     String SendMsg ="";
                     for(String S : active)
                     {
-//                        if(!S.equals(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()))
-//                        {
                         SendMsg+=S+"!";
-//                        }
                     }
                     System.err.println(activeSoket.size());
                     for(Socket S : activeSoket)
@@ -102,12 +112,13 @@ public class TCPServerN extends javax.swing.JFrame {
                    {
                    e.printStackTrace();
                    }
+               if(fout == true)break;
            }
            
         }
         
     }
-     
+    static operate logoutoff_Run;
     void server()
     {
         try
@@ -120,7 +131,6 @@ public class TCPServerN extends javax.swing.JFrame {
             {
                 InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()),65000,InetAddress.getLocalHost());
             }
-           // InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()));//,1000,InetAddress.getLocalHost());
             System.err.println(InitialSocket);
             while(true) {
                 System.err.println("enter loop server");
@@ -140,25 +150,20 @@ public class TCPServerN extends javax.swing.JFrame {
                     OnlineUser.append("Login by: "+ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()+"\n");
                     System.err.println("in LOGIN");
                     String SendMsg ="";
-//                    ArrayList<String> se = new ArrayList<>(active); 
-//                    se.remove(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+String.copyValueOf(ConnectionSocket.getPort())));
                     for(String S : active)
                     {
-//                        if(!S.equals(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort())){
                         SendMsg+=S+"!";
-//                        }
                     }
                     System.err.println(activeSoket.size());
                     for(Socket S : activeSoket)
                     {
-//                        if(!S.equals(ConnectionSocket)){
                         System.err.println(S);
                         DataOutputStream outToClient = new DataOutputStream(S.getOutputStream());
-                        outToClient.writeBytes(SendMsg+'\n');//}
+                        outToClient.writeBytes(SendMsg+'\n');
                     }
                     
-                    operate yy =new operate(ConnectionSocket); 
-                    logoutoff =new Thread(yy); 
+                    logoutoff_Run =new operate(ConnectionSocket); 
+                    logoutoff =new Thread(logoutoff_Run); 
                     logoutoff.start();
                 }
             }
