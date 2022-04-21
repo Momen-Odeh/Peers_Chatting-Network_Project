@@ -52,6 +52,7 @@ public class ClientChat extends javax.swing.JFrame {
         initComponents();
          model = new DefaultListModel<>();
          jList1.setModel(model);
+         Logout.setEnabled(false);
         if(jComboBox1.getSelectedItem() == "Wi-Fi")
         {
             try {
@@ -62,7 +63,8 @@ public class ClientChat extends javax.swing.JFrame {
                 ex.printStackTrace();
             }
         }
-        
+        RemoteIP.setEnabled(false);
+        RemotePort.setEnabled(false);
         
     }
     boolean fi=true;
@@ -594,6 +596,11 @@ public class ClientChat extends javax.swing.JFrame {
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
         try
         {
+            if(UserName.getText().equals(""))
+            {
+                throw new java.lang.NullPointerException(); 
+            }
+            
             //**************************************************************
             if(Socket == null)
             {
@@ -605,7 +612,6 @@ public class ClientChat extends javax.swing.JFrame {
             else
             {
                 Socket.close(); //------------------------------------------------------------------->
-                t.stop();
                 t.interrupt();
                 Socket =new DatagramSocket(Integer.parseInt(LocalPort.getText()));
                 P2P_Conn MN =new P2P_Conn();
@@ -613,15 +619,7 @@ public class ClientChat extends javax.swing.JFrame {
                 t.start();
             }
             //**************************************************************
-            Login.setEnabled(false);
-            UserName.setEnabled(false);
-            TCPserverIP.setEnabled(false);
-            TCPserverPort.setEnabled(false);
-            LocalIP.setEnabled(false);
-            LocalPort.setEnabled(false);
-            jComboBox1.setEnabled(false);
-            RemoteIP.setEnabled(false);
-            RemotePort.setEnabled(false);
+            
             
             String [] ser;
 //            if(!TCPserverIP.getText().equals(LocalIP.getText()))
@@ -667,11 +665,38 @@ public class ClientChat extends javax.swing.JFrame {
 //            {
 //                model.addElement(w);
 //            }
+            Login.setEnabled(false);
+            Logout.setEnabled(true);
+            UserName.setEnabled(false);
+            TCPserverIP.setEnabled(false);
+            TCPserverPort.setEnabled(false);
+            LocalIP.setEnabled(false);
+            LocalPort.setEnabled(false);
+            jComboBox1.setEnabled(false);
+            RemoteIP.setEnabled(false);
+            RemotePort.setEnabled(false);
             
         }
-        catch(java.lang.NumberFormatException e)
+        catch(java.net.ConnectException e)
         {
-            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter Local IP & local port in correct format","WARNING", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please be sure TCP server info, connection failed","WARNING", JOptionPane.WARNING_MESSAGE);
+        }
+        catch(java.net.BindException e)
+        {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please choose a different address,there is address already used","WARNING", JOptionPane.WARNING_MESSAGE);
+        }
+        catch(java.lang.NullPointerException e)
+        {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter User Name","WARNING", JOptionPane.WARNING_MESSAGE);
+        }
+        catch( java.lang.ArrayIndexOutOfBoundsException ee)
+        {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter Local Local address & TCP server address in correct format","WARNING", JOptionPane.WARNING_MESSAGE);
+        }
+        catch(java.lang.NumberFormatException e )
+        {
+            
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter Local Local address & TCP server address in correct format","WARNING", JOptionPane.WARNING_MESSAGE);
         }
         catch(java.lang.IllegalArgumentException e)
         {
@@ -680,26 +705,20 @@ public class ClientChat extends javax.swing.JFrame {
         catch (Exception e)
         {
             e.printStackTrace();
-            Login.setEnabled(true);
-            UserName.setEnabled(true);
-            TCPserverIP.setEnabled(true);
-            TCPserverPort.setEnabled(true);
-            LocalIP.setEnabled(true);
-            LocalPort.setEnabled(true);
-            jComboBox1.setEnabled(true);
+//            Login.setEnabled(true);
+//            UserName.setEnabled(true);
+//            TCPserverIP.setEnabled(true);
+//            TCPserverPort.setEnabled(true);
+//            LocalIP.setEnabled(true);
+//            LocalPort.setEnabled(true);
+//            jComboBox1.setEnabled(true);
         }
     }//GEN-LAST:event_LoginActionPerformed
 
     private void LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutActionPerformed
         try
         {
-            Login.setEnabled(true);
-            UserName.setEnabled(true);
-            TCPserverIP.setEnabled(true);
-            TCPserverPort.setEnabled(true);
-            LocalIP.setEnabled(true);
-            LocalPort.setEnabled(true);
-            jComboBox1.setEnabled(true);
+            
             
             System.out.println(ClientSocket.getLocalPort()+"!!!!!!!!!!!!!!!");
             outToServer = new DataOutputStream(ClientSocket.getOutputStream());
@@ -711,15 +730,30 @@ public class ClientChat extends javax.swing.JFrame {
 //            DefaultListModel<String> model = new DefaultListModel<>();
 //            jList1.setModel(model);
             model.clear();
+//                        Socket.close();
 //            ClientSocket.close();
-//            Socket.close();
+
 //            t.interrupt();
 //            ttt.interrupt();
 //            t.stop();
 //            ttt.stop();
 //            TCPServerN.logoutoff.interrupt();
 //            TCPServerN.logoutoff.stop();
-            
+              RemoteIP.setEnabled(true);
+            RemotePort.setEnabled(true);
+            RemoteIP.setText("");
+            RemotePort.setText("");
+            LocalPort.setText("");
+            UserName.setText("");
+            Logout.setEnabled(false);
+            Login.setEnabled(true);
+            //-->
+            UserName.setEnabled(true);
+            TCPserverIP.setEnabled(true);
+            TCPserverPort.setEnabled(true);
+            LocalIP.setEnabled(true);
+            LocalPort.setEnabled(true);
+            jComboBox1.setEnabled(true);
                
         }
         catch (Exception e)

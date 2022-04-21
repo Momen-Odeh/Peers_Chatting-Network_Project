@@ -20,6 +20,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -162,8 +163,21 @@ public class TCPServerN extends javax.swing.JFrame {
                 }
             }
         }
+        catch(java.lang.NumberFormatException e)
+        {
+            PortNo.setText("");
+            PortNo.setEnabled(true);
+            jComboBox1.setEnabled(true);
+            StartListing.setEnabled(true);
+            Status.setText("");
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter port number for server in correct format","WARNING", JOptionPane.WARNING_MESSAGE);
+        }
         catch (Exception e)
         {
+            PortNo.setText("");
+            PortNo.setEnabled(true);
+            jComboBox1.setEnabled(true);
+            StartListing.setEnabled(true);
             e.printStackTrace();
         }
     }
@@ -282,7 +296,9 @@ public class TCPServerN extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void StartListingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StartListingActionPerformed
-    
+        StartListing.setEnabled(false);
+        PortNo.setEnabled(false);
+        jComboBox1.setEnabled(false);
         t =new Thread(new TCP_Server()); 
         t.start();
     if(jComboBox1.getSelectedItem().equals("Loopback pseudo-Interface"))
