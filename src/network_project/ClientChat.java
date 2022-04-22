@@ -708,6 +708,7 @@ public class ClientChat extends javax.swing.JFrame {
             t.interrupt();
             t.stop();
             Socket.close();//UDP
+            Chat.setText("");
             RemoteIP.setEnabled(true);
             RemotePort.setEnabled(true);
             RemoteIP.setText("");
