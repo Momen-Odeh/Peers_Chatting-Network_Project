@@ -32,8 +32,8 @@ public class TCPServerN extends javax.swing.JFrame {
      * Creates new form TCPServerN
      */
     Thread t; 
-    ArrayList <String> active =new ArrayList();
-    ArrayList <Socket> activeSoket =new ArrayList();
+    static ArrayList <String> active =new ArrayList();
+    static ArrayList <Socket> activeSoket =new ArrayList();
      ServerSocket InitialSocket;
      Socket ConnectionSocket;
 
@@ -54,12 +54,13 @@ public class TCPServerN extends javax.swing.JFrame {
         boolean fout=false; 
         @Override
         public void run() {
-           while (true)
+           try{
+            while (true)
            {
-               try{
+               
                    fout=false; 
                BufferedReader InputClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String ClientMsg = InputClient.readLine().trim();
+                String ClientMsg = InputClient.readLine();
                 ss = ClientMsg.split("-");
                if(ss[0].equals("logout"))
                 {
@@ -74,20 +75,24 @@ public class TCPServerN extends javax.swing.JFrame {
                             
 //                       if(logoutoff_Run.socket .equals(activeSoket.get(i)) ){
 //                           System.out.println(ClientChat.ttt.);
-                        ClientChat.ttt.interrupt();
-                        ClientChat.ttt.stop();
-                        activeSoket.get(i).close();
-                        logoutoff.interrupt();
-                        logoutoff.stop();
+//**********************
+//                        ClientChat.ttt.interrupt();
+//                        ClientChat.ttt.stop();
+                            avtive_thread.get(i).interrupt();
+                            avtive_thread.get(i).stop();
+                            activeSoket.get(i).close();
+//                        logoutoff.interrupt();
+//                        logoutoff.stop();
+//**********************  
 //                       }
-                        
+                      
                         activeSoket.remove(i);
                         active.remove(i); 
                         model.addAll(active);
                         System.out.println("network_project.TCPServerN.server()gfaergads");
 //                        logoutoff.interrupt();
-                            fout=true;
-                        break; 
+                        fout=true;
+//                        break; ///////////////////////////////////////////////
                        }
                    }
                  
@@ -107,18 +112,19 @@ public class TCPServerN extends javax.swing.JFrame {
                     //*********
                 }
                
-               }
+               
+               if(fout == true)break;
+           }/////////////////////////////
+           }
                 catch(Exception e)
                    {
                    e.printStackTrace();
                    }
-               if(fout == true)break;
-           }
-           
         }
         
     }
     static operate logoutoff_Run;
+    static ArrayList<Thread> avtive_thread =new ArrayList<>(); 
     void server()
     {
         try
@@ -131,8 +137,16 @@ public class TCPServerN extends javax.swing.JFrame {
             {
                 InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()),65000,InetAddress.getLocalHost());
             }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        
             System.err.println(InitialSocket);
             while(true) {
+                try
+                {
                 System.err.println("enter loop server");
                 ConnectionSocket = InitialSocket.accept();
                 System.err.println("accept loop server");
@@ -144,6 +158,7 @@ public class TCPServerN extends javax.swing.JFrame {
                 jList1.setModel(model);
                if(ss[0].equals("login"))
                 {
+                    avtive_thread.add(ClientChat.ttt); 
                     activeSoket.add(ConnectionSocket);
                     active.add(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort());
                     model.addAll(active);
@@ -166,8 +181,7 @@ public class TCPServerN extends javax.swing.JFrame {
                     logoutoff =new Thread(logoutoff_Run); 
                     logoutoff.start();
                 }
-            }
-        }
+               }
         catch(java.lang.NumberFormatException e)
         {
             PortNo.setText("");
@@ -185,6 +199,8 @@ public class TCPServerN extends javax.swing.JFrame {
             StartListing.setEnabled(true);
             e.printStackTrace();
         }
+            }/////////////////////////////////
+        
     }
     class TCP_Server implements Runnable
     {
