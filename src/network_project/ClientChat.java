@@ -169,6 +169,7 @@ public class ClientChat extends javax.swing.JFrame {
         catch(java.lang.NumberFormatException e)
         {
             JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter local port in correct format","WARNING", JOptionPane.WARNING_MESSAGE);
+            
         }
         catch(java.net.BindException e)
         {
@@ -336,6 +337,8 @@ public class ClientChat extends javax.swing.JFrame {
         Chat.setEditable(false);
         jScrollPane4.setViewportView(Chat);
 
+        jList1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jList1.setForeground(new java.awt.Color(0, 0, 255));
         jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 jList1ValueChanged(evt);
@@ -508,12 +511,16 @@ public class ClientChat extends javax.swing.JFrame {
        {
            LocalIP.setText("127.0.0.1");
            TCPserverIP.setText("127.0.0.1");
+           RemotePort.setEnabled(false);
+           RemoteIP.setEnabled(false);
        }
        else if(jComboBox1.getSelectedItem().equals("Wi-Fi"))
         {
             try {
                 LocalIP.setText("");
                 RemoteIP.setText("");
+                RemotePort.setEnabled(false);
+                RemoteIP.setEnabled(false);
                 LocalIP.setText(InetAddress.getLocalHost().getHostAddress().toString());
                 TCPserverIP.setText(InetAddress.getLocalHost().getHostAddress().toString());
             }
@@ -526,6 +533,8 @@ public class ClientChat extends javax.swing.JFrame {
        {
            LocalIP.setText("");
            RemoteIP.setText("");
+           RemotePort.setEnabled(true);
+           RemoteIP.setEnabled(true);
        }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
@@ -534,6 +543,7 @@ public class ClientChat extends javax.swing.JFrame {
     }//GEN-LAST:event_StatusActionPerformed
  
     private void SendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendActionPerformed
+        try{
         for(String s : elements)
         {
             String [] ss = s.split(":");
@@ -541,15 +551,28 @@ public class ClientChat extends javax.swing.JFrame {
         }
         
         Sendmsg.setText("");
+        }
+        catch(java.lang.NullPointerException e)
+        {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Confirm your information","WARNING", JOptionPane.WARNING_MESSAGE);
+            
+        }
     }//GEN-LAST:event_SendActionPerformed
 
     private void TestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestButtonActionPerformed
         SendMsg="Hello";
         testtxt=true;
+        try{
         for(String s : elements)
         {
             String [] ss = s.split(":");
             Client(ss[1],ss[2]);
+        }
+        }
+        catch(java.lang.NullPointerException e)
+        {
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Confirm your information","WARNING", JOptionPane.WARNING_MESSAGE);
+            
         }
     }//GEN-LAST:event_TestButtonActionPerformed
 
@@ -570,15 +593,12 @@ public class ClientChat extends javax.swing.JFrame {
              
             OutputServer = new BufferedReader(new InputStreamReader(client.getInputStream()));
             String ReceiveMsg = OutputServer.readLine();
-            
-            System.out.println("FROM SERVER: " + ReceiveMsg+"***");
 
             if(ReceiveMsg == null )break; 
             { list =ReceiveMsg.split("!");
             model.clear();
             for(String w : list)
             {
-                System.out.println(w);
                 if(!w.split(":")[0].equals(UserName.getText()))
                 model.addElement(w);
             }
@@ -627,7 +647,6 @@ public class ClientChat extends javax.swing.JFrame {
             ttt =new Thread(act); 
             ttt.start();
             String SendMsg ="login-"+UserName.getText(); 
-            System.out.println(SendMsg);
             outToServer.writeBytes(SendMsg+'\n');
 
             //**************************************************************
@@ -683,41 +702,12 @@ public class ClientChat extends javax.swing.JFrame {
     private void LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutActionPerformed
         try
         {
-            System.out.println(ClientSocket.getLocalPort()+"!!!!!!!!!!!!!!!");
-//            outToServer = new DataOutputStream(ClientSocket.getOutputStream());
             String SendMsg ="logout-"+UserName.getText()+"\n";
-            System.out.println(SendMsg);            
-//            OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
             outToServer.writeBytes(SendMsg);
             model.clear();
-            //closed soked and thread area
-//            Socket.close();
-//            ClientSocket.close();
-//            t.interrupt();
-            
-            
-//            ttt.interrupt();
-//            ttt.stop();
-//            ClientSocket.close();//TCP
-//            for (int i=0 ;i<TCPServerN.active.size();i++)
-//            {
-//                if(TCPServerN.active.get(i).split(":")[0].equals(UserName.getText()))
-//                {
-//                    TCPServerN.avtive_thread.get(i).interrupt();
-//                    TCPServerN.avtive_thread.get(i).stop();
-//                    break; 
-//                }
-//            }
             t.interrupt();
             t.stop();
             Socket.close();//UDP
-            
-            
-           
-//            TCPServerN.logoutoff.interrupt();
-//            TCPServerN.logoutoff.stop();
-            
-
             RemoteIP.setEnabled(true);
             RemotePort.setEnabled(true);
             RemoteIP.setText("");

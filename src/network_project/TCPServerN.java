@@ -34,8 +34,10 @@ public class TCPServerN extends javax.swing.JFrame {
     Thread t; 
     static ArrayList <String> active =new ArrayList();
     static ArrayList <Socket> activeSoket =new ArrayList();
-     ServerSocket InitialSocket;
-     Socket ConnectionSocket;
+    ServerSocket InitialSocket;
+    Socket ConnectionSocket;
+    static operate logoutoff_Run;
+    static ArrayList<Thread> active_thread =new ArrayList<>();
 
     public TCPServerN() {
         initComponents();
@@ -70,29 +72,13 @@ public class TCPServerN extends javax.swing.JFrame {
                        {
                         OnlineUser.append("Logout by: "+ss[1]+":"+activeSoket.get(i).getInetAddress().toString().replace("/","")+":"+activeSoket.get(i).getPort()+"\n");   
                         model.clear();
-//                        DataOutputStream outToClient = new DataOutputStream(activeSoket.get(i).getOutputStream());
-//                        outToClient.writeBytes("done"+'\n');
-                            
-//                       if(logoutoff_Run.socket .equals(activeSoket.get(i)) ){
-//                           System.out.println(ClientChat.ttt.);
-//**********************
-//                        ClientChat.ttt.interrupt();
-//                        ClientChat.ttt.stop();
-                            avtive_thread.get(i).interrupt();
-                            avtive_thread.get(i).stop();
-                            activeSoket.get(i).close();
-//                        logoutoff.interrupt();
-//                        logoutoff.stop();
-//**********************  
-//                       }
-                      
+                        active_thread.get(i).interrupt();
+                        active_thread.get(i).stop();
+                        activeSoket.get(i).close();
                         activeSoket.remove(i);
                         active.remove(i); 
                         model.addAll(active);
-                        System.out.println("network_project.TCPServerN.server()gfaergads");
-//                        logoutoff.interrupt();
                         fout=true;
-//                        break; ///////////////////////////////////////////////
                        }
                    }
                  
@@ -102,10 +88,8 @@ public class TCPServerN extends javax.swing.JFrame {
                     {
                         SendMsg+=S+"!";
                     }
-                    System.err.println(activeSoket.size());
                     for(Socket S : activeSoket)
                     {
-                        System.err.println(S);
                         DataOutputStream outToClient = new DataOutputStream(S.getOutputStream());
                         outToClient.writeBytes(SendMsg+'\n');
                     }
@@ -122,9 +106,7 @@ public class TCPServerN extends javax.swing.JFrame {
                    }
         }
         
-    }
-    static operate logoutoff_Run;
-    static ArrayList<Thread> avtive_thread =new ArrayList<>(); 
+    } 
     void server()
     {
         try
@@ -138,41 +120,68 @@ public class TCPServerN extends javax.swing.JFrame {
                 InitialSocket = new ServerSocket(Integer.parseInt(PortNo.getText()),65000,InetAddress.getLocalHost());
             }
         }
+        catch(java.lang.NumberFormatException e)
+        {
+            
+            Status.setText("");
+            jComboBox1.setEnabled(true);
+            StartListing.setEnabled(true);
+            PortNo.setEnabled(true);
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "please enter port number for server in correct format","WARNING", JOptionPane.WARNING_MESSAGE);
+            t.interrupt();
+            t.stop();
+        }
+        catch(java.lang.NullPointerException e)
+        {
+            Status.setText("");
+            jComboBox1.setEnabled(true);
+            StartListing.setEnabled(true);
+            PortNo.setEnabled(true);
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "please enter port number for server in correct format","WARNING", JOptionPane.WARNING_MESSAGE);
+            t.interrupt();
+            t.stop();
+        }
+        catch(java.net.BindException e)
+        {
+            Status.setText("");
+            jComboBox1.setEnabled(true);
+            StartListing.setEnabled(true);
+            PortNo.setEnabled(true);
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Address already in uses, please choose diffrent port","WARNING", JOptionPane.WARNING_MESSAGE);
+        }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Status.setText("");
+            jComboBox1.setEnabled(true);
+            StartListing.setEnabled(true);
+            PortNo.setEnabled(true);
+//            e.printStackTrace();
         }
         
-            System.err.println(InitialSocket);
             while(true) {
                 try
                 {
-                System.err.println("enter loop server");
                 ConnectionSocket = InitialSocket.accept();
-                System.err.println("accept loop server");
                 
                 BufferedReader InputClient = new BufferedReader(new InputStreamReader(ConnectionSocket.getInputStream()));
                 String ClientMsg = InputClient.readLine().trim();
                 ss = ClientMsg.split("-");
-               model = new DefaultListModel<>();
+                model = new DefaultListModel<>();
                 jList1.setModel(model);
                if(ss[0].equals("login"))
                 {
-                    avtive_thread.add(ClientChat.ttt); 
+                    active_thread.add(ClientChat.ttt); 
                     activeSoket.add(ConnectionSocket);
                     active.add(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort());
                     model.addAll(active);
                     OnlineUser.append("Login by: "+ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort()+"\n");
-                    System.err.println("in LOGIN");
                     String SendMsg ="";
                     for(String S : active)
                     {
                         SendMsg+=S+"!";
                     }
-                    System.err.println(activeSoket.size());
                     for(Socket S : activeSoket)
                     {
-                        System.err.println(S);
                         DataOutputStream outToClient = new DataOutputStream(S.getOutputStream());
                         outToClient.writeBytes(SendMsg+'\n');
                     }
@@ -231,6 +240,7 @@ public class TCPServerN extends javax.swing.JFrame {
         jList1 = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Server");
         setResizable(false);
 
         StartListing.setText("Start Listing");
@@ -241,6 +251,8 @@ public class TCPServerN extends javax.swing.JFrame {
         });
 
         jLabel1.setText("Port:");
+
+        PortNo.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
 
         OnlineUser.setEditable(false);
         OnlineUser.setColumns(20);
@@ -256,7 +268,8 @@ public class TCPServerN extends javax.swing.JFrame {
         Status.setBackground(new java.awt.Color(255, 255, 255));
         Status.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
 
-        jList1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jList1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jList1.setForeground(new java.awt.Color(0, 51, 255));
         activeUser.setViewportView(jList1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -295,9 +308,9 @@ public class TCPServerN extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(4, 4, 4)
                                 .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(1, 1, 1)
-                                .addComponent(PortNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(PortNo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(36, 36, 36)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34)
