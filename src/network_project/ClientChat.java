@@ -26,7 +26,7 @@ import javax.swing.text.StyledDocument;
 
 /**
  *
- * @author Momen & Noor
+ * @author Momen & Noor Aldeen
  */
 
 
@@ -218,17 +218,21 @@ public class ClientChat extends javax.swing.JFrame {
         Chat = new javax.swing.JTextPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
+        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Client Chat");
         setMaximumSize(new java.awt.Dimension(1015, 460));
         setMinimumSize(new java.awt.Dimension(1015, 460));
         setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("User name:");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 41, -1, -1));
 
         UserName.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         UserName.setPreferredSize(new java.awt.Dimension(7, 24));
+        getContentPane().add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(83, 37, 150, 26));
 
         Login.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         Login.setForeground(new java.awt.Color(0, 0, 255));
@@ -238,6 +242,7 @@ public class ClientChat extends javax.swing.JFrame {
                 LoginActionPerformed(evt);
             }
         });
+        getContentPane().add(Login, new org.netbeans.lib.awtextra.AbsoluteConstraints(276, 32, 90, 33));
 
         Logout.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         Logout.setForeground(new java.awt.Color(255, 0, 0));
@@ -247,11 +252,14 @@ public class ClientChat extends javax.swing.JFrame {
                 LogoutActionPerformed(evt);
             }
         });
+        getContentPane().add(Logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(384, 32, 90, 33));
 
         jLabel2.setText("TCP Server IP:");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(493, 41, -1, -1));
 
         TCPserverIP.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         TCPserverIP.setPreferredSize(new java.awt.Dimension(7, 24));
+        getContentPane().add(TCPserverIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(596, 36, 150, 23));
 
         TCPserverPort.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         TCPserverPort.setPreferredSize(new java.awt.Dimension(7, 24));
@@ -260,10 +268,13 @@ public class ClientChat extends javax.swing.JFrame {
                 TCPserverPortActionPerformed(evt);
             }
         });
+        getContentPane().add(TCPserverPort, new org.netbeans.lib.awtextra.AbsoluteConstraints(596, 70, 150, -1));
 
         jLabel3.setText("TCP Server Port :");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(493, 73, -1, -1));
 
         jLabel4.setText("Avalible Interface");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(493, 116, -1, -1));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Wi-Fi", "Ethernet", "Loopback pseudo-Interface" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -271,13 +282,17 @@ public class ClientChat extends javax.swing.JFrame {
                 jComboBox1ActionPerformed(evt);
             }
         });
+        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(493, 136, 300, 40));
 
         jLabel5.setText("Local IP:");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(493, 197, -1, -1));
 
         jLabel6.setText("Local Port:");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(493, 240, -1, -1));
 
         LocalIP.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         LocalIP.setPreferredSize(new java.awt.Dimension(7, 24));
+        getContentPane().add(LocalIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(572, 194, 150, -1));
 
         LocalPort.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         LocalPort.setPreferredSize(new java.awt.Dimension(7, 24));
@@ -286,13 +301,17 @@ public class ClientChat extends javax.swing.JFrame {
                 LocalPortActionPerformed(evt);
             }
         });
+        getContentPane().add(LocalPort, new org.netbeans.lib.awtextra.AbsoluteConstraints(571, 237, 150, -1));
 
         jLabel7.setText("Remote Port:");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(493, 316, -1, 20));
 
         jLabel8.setText("Remote IP:");
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(493, 282, -1, -1));
 
         RemoteIP.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         RemoteIP.setPreferredSize(new java.awt.Dimension(7, 24));
+        getContentPane().add(RemoteIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(572, 279, 150, -1));
 
         RemotePort.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         RemotePort.setPreferredSize(new java.awt.Dimension(7, 24));
@@ -301,6 +320,7 @@ public class ClientChat extends javax.swing.JFrame {
                 RemotePortActionPerformed(evt);
             }
         });
+        getContentPane().add(RemotePort, new org.netbeans.lib.awtextra.AbsoluteConstraints(571, 316, 150, -1));
 
         Send.setText("Send");
         Send.addActionListener(new java.awt.event.ActionListener() {
@@ -308,6 +328,7 @@ public class ClientChat extends javax.swing.JFrame {
                 SendActionPerformed(evt);
             }
         });
+        getContentPane().add(Send, new org.netbeans.lib.awtextra.AbsoluteConstraints(513, 358, 90, 50));
 
         TestButton.setText("Test Button");
         TestButton.addActionListener(new java.awt.event.ActionListener() {
@@ -315,13 +336,17 @@ public class ClientChat extends javax.swing.JFrame {
                 TestButtonActionPerformed(evt);
             }
         });
+        getContentPane().add(TestButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(686, 358, 107, 50));
 
         Sendmsg.setColumns(20);
         Sendmsg.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         Sendmsg.setRows(5);
         jScrollPane2.setViewportView(Sendmsg);
 
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 315, 477, 96));
+
         jLabel9.setText("Status:");
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 437, -1, -1));
 
         Status.setEditable(false);
         Status.setBackground(new java.awt.Color(255, 255, 255));
@@ -331,11 +356,15 @@ public class ClientChat extends javax.swing.JFrame {
                 StatusActionPerformed(evt);
             }
         });
+        getContentPane().add(Status, new org.netbeans.lib.awtextra.AbsoluteConstraints(55, 429, 432, 30));
 
         jLabel10.setText("Online User");
+        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(799, 33, -1, -1));
 
         Chat.setEditable(false);
         jScrollPane4.setViewportView(Chat);
+
+        getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 73, 477, 228));
 
         jList1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jList1.setForeground(new java.awt.Color(0, 0, 255));
@@ -346,149 +375,11 @@ public class ClientChat extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jList1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel9)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(Status))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addGap(18, 18, 18)
-                            .addComponent(UserName, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(43, 43, 43)
-                            .addComponent(Login, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(Logout, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel4)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addGap(38, 38, 38)
-                        .addComponent(LocalIP, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(27, 27, 27)
-                        .addComponent(LocalPort, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(25, 25, 25)
-                        .addComponent(RemoteIP, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(14, 14, 14)
-                        .addComponent(RemotePort, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(32, 32, 32))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(TCPserverPort, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                            .addComponent(TCPserverIP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(Send, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(TestButton, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(32, 32, 32)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(9, 9, 9)
-                                        .addComponent(jLabel1))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(Login, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(UserName, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(Logout, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(250, 250, 250)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel9)
-                                    .addComponent(Status, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(36, 36, 36)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel2)
-                                    .addComponent(TCPserverIP, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(3, 3, 3)
-                                                .addComponent(jLabel3))
-                                            .addComponent(TCPserverPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(22, 22, 22)
-                                        .addComponent(jLabel4)
-                                        .addGap(6, 6, 6)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(3, 3, 3)
-                                                .addComponent(jLabel5))
-                                            .addComponent(LocalIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(19, 19, 19)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(3, 3, 3)
-                                                .addComponent(jLabel6))
-                                            .addComponent(LocalPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(3, 3, 3)
-                                                .addComponent(jLabel8))
-                                            .addComponent(RemoteIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(13, 13, 13)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(RemotePort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(18, 18, 18)
-                                                .addComponent(TestButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(18, 18, 18)
-                                                .addComponent(Send, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(3, 3, 3)
-                                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(799, 53, 226, 406));
+
+        jPanel1.setBackground(new java.awt.Color(153, 204, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, -20, 1070, 520));
 
         pack();
         setLocationRelativeTo(null);
@@ -709,6 +600,7 @@ public class ClientChat extends javax.swing.JFrame {
             t.stop();
             Socket.close();//UDP
             Chat.setText("");
+            Status.setText("");
             RemoteIP.setEnabled(true);
             RemotePort.setEnabled(true);
             RemoteIP.setText("");
@@ -784,6 +676,7 @@ public class ClientChat extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
