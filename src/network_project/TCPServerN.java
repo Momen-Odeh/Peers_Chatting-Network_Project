@@ -72,8 +72,8 @@ public class TCPServerN extends javax.swing.JFrame {
                        {
                         OnlineUser.append("Logout by: "+ss[1]+":"+activeSoket.get(i).getInetAddress().toString().replace("/","")+":"+activeSoket.get(i).getPort()+"\n");   
                         model.clear();
-                        active_thread.get(i).interrupt();
-                        activeSoket.get(i).close();
+//                        active_thread.get(i).interrupt();
+//                        activeSoket.get(i).close();
                         activeSoket.remove(i);
                         active.remove(i); 
                         model.addAll(active);

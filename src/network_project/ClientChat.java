@@ -499,7 +499,7 @@ public class ClientChat extends javax.swing.JFrame {
         }
              catch(Exception e)
                 {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
             }
         
@@ -532,6 +532,7 @@ public class ClientChat extends javax.swing.JFrame {
             //
             //TCP code
             ClientSocket =new Socket(IP, Integer.parseInt(TCPserverPort.getText()),IP_client,Integer.parseInt(LocalPort.getText()));// address server
+            Network_Project.arrsocket.add(ClientSocket);
             outToServer = new DataOutputStream(ClientSocket.getOutputStream());
             OutputServer = new BufferedReader(new InputStreamReader(ClientSocket.getInputStream()));
             UpdateActive act =new UpdateActive(ClientSocket);
@@ -565,7 +566,7 @@ public class ClientChat extends javax.swing.JFrame {
         catch(java.net.BindException e)
         {
             JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please choose a different address,there is address already used","WARNING", JOptionPane.WARNING_MESSAGE);
-            ttt.interrupt();
+//            ttt.interrupt();
         }
         catch(java.lang.NullPointerException e)
         {
@@ -586,7 +587,7 @@ public class ClientChat extends javax.swing.JFrame {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }//GEN-LAST:event_LoginActionPerformed
 
@@ -596,6 +597,12 @@ public class ClientChat extends javax.swing.JFrame {
             String SendMsg ="logout-"+UserName.getText()+"\n";
             outToServer.writeBytes(SendMsg);
             model.clear();
+            ttt.interrupt();
+            for(int i=0;i<Network_Project.arrsocket.size();i++){
+            if((Network_Project.arrsocket.get(i).getLocalAddress().equals(InetAddress.getByName(LocalIP.getText()))) && (Network_Project.arrsocket.get(i).getLocalPort()==Integer.parseInt(LocalPort.getText()))){
+                Network_Project.arrsocket.get(i).close();
+            }
+            }
             t.interrupt();
             t.stop();
             Socket.close();//UDP
@@ -619,7 +626,7 @@ public class ClientChat extends javax.swing.JFrame {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+//            e.printStackTrace();
             Login.setEnabled(true);
             UserName.setEnabled(true);
             TCPserverIP.setEnabled(true);

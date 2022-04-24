@@ -4,13 +4,14 @@
  * and open the template in the editor.
  */
 package network_project;
-
+import java.net.Socket;
+import java.util.*;
 /**
  *
  * @author Momen 
  */
 public class Network_Project {
-
+static ArrayList<Socket> arrsocket=new ArrayList<>();
     /**
      * @param args the command line arguments
      */
@@ -19,7 +20,7 @@ public class Network_Project {
         new ClientChat().setVisible(true);
         new ClientChat().setVisible(true);
         new ClientChat().setVisible(true);
-        new TCPServerN().setVisible(true);
+//        new TCPServerN().setVisible(true);
     }
     
 }
