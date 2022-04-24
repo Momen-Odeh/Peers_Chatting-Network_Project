@@ -45,7 +45,6 @@ public class ClientChat extends javax.swing.JFrame {
     static Socket ClientSocket; //TCP soket
     DataOutputStream outToServer;//TCP output stream
     BufferedReader OutputServer;//ICP Input
-    DefaultListModel<String> model ;
     
     // end declaration 
     class P2P_Conn implements Runnable
@@ -58,8 +57,6 @@ public class ClientChat extends javax.swing.JFrame {
     }
     public ClientChat() {
         initComponents();
-         model = new DefaultListModel<>();
-         jList1.setModel(model);
          Logout.setEnabled(false);
         if(jComboBox1.getSelectedItem() == "Wi-Fi")
         {
@@ -487,19 +484,22 @@ public class ClientChat extends javax.swing.JFrame {
 
             if(ReceiveMsg == null )break; 
             { list =ReceiveMsg.split("!");
-            model.clear();
+            DefaultListModel<String> model ;
+            model = new DefaultListModel<>();
             for(String w : list)
             {
                 if(!w.split(":")[0].equals(UserName.getText()))
+                
                 model.addElement(w);
             }
+            jList1.setModel(model);
             }
             
                 }
         }
              catch(Exception e)
                 {
-//                    e.printStackTrace();
+                    
                 }
             }
         
@@ -566,7 +566,6 @@ public class ClientChat extends javax.swing.JFrame {
         catch(java.net.BindException e)
         {
             JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please choose a different address,there is address already used","WARNING", JOptionPane.WARNING_MESSAGE);
-//            ttt.interrupt();
         }
         catch(java.lang.NullPointerException e)
         {
@@ -587,7 +586,7 @@ public class ClientChat extends javax.swing.JFrame {
         }
         catch (Exception e)
         {
-//            e.printStackTrace();
+
         }
     }//GEN-LAST:event_LoginActionPerformed
 
@@ -596,7 +595,9 @@ public class ClientChat extends javax.swing.JFrame {
         {
             String SendMsg ="logout-"+UserName.getText()+"\n";
             outToServer.writeBytes(SendMsg);
-            model.clear();
+            DefaultListModel<String> model ;
+            model = new DefaultListModel<>();
+            jList1.setModel(model);
             ttt.interrupt();
             for(int i=0;i<Network_Project.arrsocket.size();i++){
             if((Network_Project.arrsocket.get(i).getLocalAddress().equals(InetAddress.getByName(LocalIP.getText()))) && (Network_Project.arrsocket.get(i).getLocalPort()==Integer.parseInt(LocalPort.getText()))){
@@ -626,7 +627,6 @@ public class ClientChat extends javax.swing.JFrame {
         }
         catch (Exception e)
         {
-//            e.printStackTrace();
             Login.setEnabled(true);
             UserName.setEnabled(true);
             TCPserverIP.setEnabled(true);

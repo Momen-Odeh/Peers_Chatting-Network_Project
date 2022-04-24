@@ -20,7 +20,7 @@ static ArrayList<Socket> arrsocket=new ArrayList<>();
         new ClientChat().setVisible(true);
         new ClientChat().setVisible(true);
         new ClientChat().setVisible(true);
-//        new TCPServerN().setVisible(true);
+        new TCPServerN().setVisible(true);
     }
     
 }

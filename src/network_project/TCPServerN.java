@@ -37,7 +37,6 @@ public class TCPServerN extends javax.swing.JFrame {
     ServerSocket InitialSocket;
     Socket ConnectionSocket;
     static operate logoutoff_Run;
-    static ArrayList<Thread> active_thread =new ArrayList<>();
 
     public TCPServerN() {
         initComponents();
@@ -72,8 +71,6 @@ public class TCPServerN extends javax.swing.JFrame {
                        {
                         OnlineUser.append("Logout by: "+ss[1]+":"+activeSoket.get(i).getInetAddress().toString().replace("/","")+":"+activeSoket.get(i).getPort()+"\n");   
                         model.clear();
-//                        active_thread.get(i).interrupt();
-//                        activeSoket.get(i).close();
                         activeSoket.remove(i);
                         active.remove(i); 
                         model.addAll(active);
@@ -169,7 +166,6 @@ public class TCPServerN extends javax.swing.JFrame {
                 jList1.setModel(model);
                if(ss[0].equals("login"))
                 {
-                    active_thread.add(ClientChat.ttt); 
                     activeSoket.add(ConnectionSocket);
                     active.add(ss[1]+":"+ConnectionSocket.getInetAddress().toString().replace("/","")+":"+ConnectionSocket.getPort());
                     model.addAll(active);
