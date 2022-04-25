@@ -84,13 +84,9 @@ public class ClientChat extends javax.swing.JFrame {
             IP_other_device[2]=(byte)Integer.parseInt(ipdest[2]);
             IP_other_device[3]=(byte)Integer.parseInt(ipdest[3]);
             InetAddress IPDest = InetAddress.getByAddress(IP_other_device);
-            if(testtxt == false)
-            {
-                SendMsg = Sendmsg.getText();
-            }
-            else
+
+            SendMsg = Sendmsg.getText();
             
-            testtxt=false; 
             String sindfre=SendMsg;
             SendMsg=UserName.getText()+": "+SendMsg;
 
@@ -138,7 +134,7 @@ public class ClientChat extends javax.swing.JFrame {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            
         }
     }
     void Server()
@@ -414,7 +410,7 @@ public class ClientChat extends javax.swing.JFrame {
             }
             catch (Exception ex)
             {
-                ex.printStackTrace();
+             
             }
         }
        else
@@ -448,14 +444,15 @@ public class ClientChat extends javax.swing.JFrame {
     }//GEN-LAST:event_SendActionPerformed
 
     private void TestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestButtonActionPerformed
-        SendMsg="Hello";
-        testtxt=true;
+
+        Sendmsg.setText("Hello");
         try{
         for(String s : elements)
         {
             String [] ss = s.split(":");
             Client(ss[1],ss[2]);
         }
+        Sendmsg.setText("");
         }
         catch(java.lang.NullPointerException e)
         {
