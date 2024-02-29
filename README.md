@@ -1,41 +1,38 @@
-# Chating_Between_Peers
+# Peers Chatting
 
-In this project, we aim to create a versatile chat application to applied both UDP (User Datagram Protocol) and TCP (Transmission Control Protocol) socket programming. The app allows users to chat in real-time and share text files .
 
-<img width="1050" alt="Screen Shot 2023-11-07 at 8 47 48 AM" src="https://github.com/MoheeQwareeq/Peers_Chating/assets/143301303/69a4f786-7ba4-4a3c-9294-e6be249ee500">
+This project aims to develop a flexible chat application capable of employing both UDP (User Datagram Protocol) and TCP (Transmission Control Protocol) socket programming. The application facilitates real-time communication among users.
 
+
+![Screenshot 2024-02-29 104156](https://github.com/Momen-Odeh/Network1/assets/92532348/4ef3a639-2854-4dea-8169-ab38cd0d18f2)
 
 
 
 UDP for Peer-to-Peer Chatting
 
-For the core chatting functionality, we will implement UDP socket programming. UDP is well-suited for peer-to-peer communication, allowing users to exchange messages directly with one another. This approach ensures low-latency, efficient communication between clients.
+To achieve the essential chatting functionality, we'll employ UDP socket programming. UDP's suitability for peer-to-peer communication enables direct message exchange between users, ensuring low-latency and efficient communication among clients.
 
 Peer-to-Peer Chat Communication
 
-It's important to note that despite the central role of the TCP server in managing active clients, the actual chat communication remains peer-to-peer. Clients will communicate directly with one another for their conversations, ensuring privacy and direct interaction between users.
+It's crucial to emphasize that while the TCP server plays a central role in managing active clients, the chat communication itself remains peer-to-peer. Clients will directly communicate with each other for their conversations, ensuring privacy and facilitating direct interaction between users.
 
 
 
-File Sharing Capabilities
+![Screenshot 2024-02-29 104355](https://github.com/Momen-Odeh/Network1/assets/92532348/89e7db94-0473-4f63-8c5c-130f8fed0dde)
 
-In addition to text-based chat, our application will empower users to send ".txt" files to each other. This feature enhances the utility of the application, enabling users to exchange documents and share information seamlessly.
-
-
-<img width="1051" alt="Screen Shot 2023-11-07 at 8 46 48 AM" src="https://github.com/MoheeQwareeq/Peers_Chating/assets/143301303/fa7aa20f-c7e7-4cd0-a970-45724f0fa2f6">
 
 
 
 
 TCP for Managing Active Clients
 
-To manage the list of active chat clients and facilitate communication, we will use TCP socket programming. The TCP server will act as a central hub, keeping track of the clients currently engaged in chat sessions. It will also provide a list of active clients to other clients when requested.
+To manage the list of active chat clients and facilitate communication, we used TCP socket programming. The TCP server will act as a central hub, keeping track of the clients currently engaged in chat sessions. It will also provide a list of active clients to other clients when requested.
 
 Server's Role in Sharing Active Client List
 
-The TCP server's primary role is to maintain a dynamic list of active clients. When a new client connects or an existing one leaves, the server updates this list accordingly. Additionally, the server will respond to client requests by providing an up-to-date list of active clients. This functionality mirrors the behavior seen in popular chat applications like Skype.
+The main task of the TCP server is to manage a constantly updating roster of active clients. Whenever a new client connects or an existing one disconnects, the server adjusts this list accordingly. Furthermore, it promptly responds to client inquiries by furnishing an updated list of active clients. This functionality closely resembles the behavior observed in well-known chat platforms such as Skype.
 
-<img width="750" alt="Screen Shot 2023-11-07 at 8 48 28 AM" src="https://github.com/MoheeQwareeq/Peers_Chating/assets/143301303/3873389a-dae9-408f-b8ed-5eca2da2c922">
+![Screenshot 2024-02-29 104515](https://github.com/Momen-Odeh/Network1/assets/92532348/4a13a944-c526-4442-b0d3-51a29dc558b7)
 
 
 
